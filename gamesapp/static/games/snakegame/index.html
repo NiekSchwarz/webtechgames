@@ -52,6 +52,12 @@
     </section>
 </div>
 <script>
+    
+    function giveScore() {
+          
+                        }
+                        
+    
     var drawModule = (function () {
         var bodySnek = function (x, y) {
             ctx.fillStyle = 'red';
@@ -100,6 +106,10 @@
                 SnekY++;
             }
             if (SnekX == -1 || SnekX == w / SnekSize || SnekY == -1 || SnekY == h / SnekSize || checkCollision(SnekX, SnekY, Snek)) {
+                
+                giveScore();
+                document.location.reload();
+                
                 //restart game when collision is true
                 btn.removeAttribute('disabled', true); //enable button again
 
