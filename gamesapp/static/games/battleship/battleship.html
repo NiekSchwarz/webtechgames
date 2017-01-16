@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+
+    <style>
+        body {
+            margin: 60px auto;
+            width: 70%;
+            max-width: 950px;
+            background-color: lightblue;
+        }
+
+        button, input {
+            font-size: 1em;
+            line-height: 0.5em;
+            color: #333;
+            margin-bottom: 0.5em;
+        }
+
+        p2 {
+            font-size: 1em;
+            line-height: 0.5em;
+            color: #0500ff;
+            margin-bottom: 0.5em;
+            background-color: lightblue;
+        }
+
+        scoreBoard {
+            font-size: 1em;
+            line-height: 0.5em;
+            color: #FFF;
+            margin-bottom: 0.5em;
+            background-color: lightblue;
+        }
+
+        #gameboard {
+            position: relative;
+            margin: 0 auto 2em auto;
+            border: 2px solid black;
+            width: 500px;
+            height: 500px;
+        }
+
+        #gameboard div {
+            position: absolute;
+            -webkit-box-sizing: border-box; /*For Safari 3.0 - 5.0, Chrome 1 - 9*/
+            -moz-box-sizing: border-box; /*For Firefox 1-28*/
+            box-sizing: border-box; /*For Safari 5.1+, Firefox 29+, Opera 7+, IE 8+*/
+            background: #0086b3;
+            border: 1px solid lightblue;
+            width: 50px;
+            height: 50px;
+        }
+
+        #scoreBoard {
+            width: 15%;
+            padding: 2px 0;
+            margin-left: 10%;
+            color: white;
+            position: relative;
+            float: right;
+            background-color: lightblue;
+        }
+
+
+    </style>
+</head>
+<body>
+<input type="button" value="Play" onclick="toggle()"/>
+<div id="scoreBoard">
+    <p2>Your points: <span id="score">0</span></p2>
+</div>
+<div id="gameboard" style="display:none"></div>
+
+<script>
+    var score = [];
+    var points = 0;
+    var turn = 0;
+
+    function toggle() {
+        document.getElementById('gameboard').style.display = "block";
+        document.getElementById('scoreBoard').style.display = "block";
+    }
+
+    window.addEventListener("keydown", function (e) {
+        // space and arrow keys
+        if ([32, 37, 38, 39, 40].indexOf(e.keyCode) > -1) {
+            e.preventDefault();
+        }
+    }, false)
+
+    //determine grid and square size
+    var rows = 10;
+    var cols = 10;
+    var squareSize = 50;
+
+    var gameBoardContainer = document.getElementById("gameboard");
+
+    //create grid
+    for (i = 0; i < cols; i++) {
+        for (j = 0; j < rows; j++) {
+            var square = document.createElement("div");
+            gameBoardContainer.appendChild(square);
+            square.id = 's' + j + i; //give each square a code based on its position in the grid
+            //set coordinates
+            var topPos = j * squareSize;
+            var leftPos = i * squareSize;
+            square.style.top = topPos + 'px';
+            square.style.left = leftPos + 'px';
+        }
+    }
+
+    var hits = 0;
+
+
+    var gB1 = [
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 1, 1, 1, 0, 0, 0, 0, 0],
+        [0, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        [1, 1, 1, 1, 0, 0, 1, 1, 1, 1],
+        [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ]
+    var gB2 = [
+        [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 1, 1, 1, 1],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+    ]
+    var gB3 = [
+        [0, 0, 0, 1, 1, 1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 1, 1, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+        [1, 0, 0, 0, 0, 0, 0, 1, 0, 0],
+        [1, 0, 0, 1, 0, 0, 0, 1, 0, 0],
+        [1, 0, 0, 1, 0, 0, 0, 0, 0, 0],
+        [0, 0, 0, 0, 0, 0, 1, 1, 0, 0]
+    ]
+    var check = Math.floor(Math.random() * 3) + 1;
+
+    if (check <= 1) {
+        var gameBoard = gB1;
+    } else if (check < 2 && check >= 1) {
+        var gameBoard = gB2;
+    } else {
+        var gameBoard = gB3;
+    }
+
+    gameBoardContainer.addEventListener("click", fireMissle, false);
+
+    function fireMissle(e) {
+        var row = e.target.id.substring(1, 2);
+        var col = e.target.id.substring(2, 3);
+
+        if (gameBoard[row][col] > 1) {
+            alert("You're wasting ammo! Stop firing!");
+        }
+
+        if (e.target !== e.currentTarget) {
+            //if you miss
+            if (gameBoard[row][col] == 0) {
+                e.target.style.background = 'lightblue';
+                gameBoard[row][col] = 3;
+                points -= 20;
+                score.push(points);
+                document.getElementById("score").innerHTML = score[turn];
+                turn++;
+                //if you hit
+            } else if (gameBoard[row][col] == 1) {
+                e.target.style.background = 'red';
+                gameBoard[row][col] = 2;
+                hits++;
+                points += 200;
+                score.push(points);
+                document.getElementById("score").innerHTML = score[turn];
+                turn++;
+            }
+            if (hits == 17) {
+                alert("All enemy battleships have been defeated! You rock!");
+                //document.getElementById('gameboard').style.display = "none";
+                //window.location.reload();
+            }
+        }
+        e.stopPropagation();
+    }
+
+
+</script>
+</body>
+</html>
