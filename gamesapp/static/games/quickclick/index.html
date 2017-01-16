@@ -373,7 +373,7 @@
     document.getElementById("hard").onclick = stopEM;
     //Push high score to database
     document.getElementById("savescore").onclick = giveScore();
-    document.getElementById("savescore").onclick = document.reload();
+    document.getElementById("savescore").onclick = document.location.reload();
 
     function pad(val) {
         return val > 9 ? val : "0" + val;
